@@ -1,0 +1,133 @@
+---
+// Resume Section Component
+import { getCollection } from 'astro:content';
+
+const experiences = await getCollection('experience');
+---
+
+<section id="resume" class="section bg-white dark:bg-dark-bg" aria-labelledby="resume-heading">
+  <div class="container-custom lg:pl-72">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <span class="inline-block px-3 py-1 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">Professional Background</span>
+      <h2 id="resume-heading" class="section-title">Experience & Education</h2>
+      <p class="section-subtitle mt-4">
+        My journey from Computer Science student to IT Professional, building systems that make a real impact.
+      </p>
+    </div>
+
+    <div class="relative">
+      <!-- Timeline line -->
+      <div class="absolute left-4 lg:left-1/2 transform lg:-translate-x-1/2 h-full w-0.5 bg-gradient-to-b from-primary-500 to-primary-500/20" aria-hidden="true"></div>
+
+      <div class="space-y-8">
+        {experiences.map((exp, index) => (
+          <div class="relative animate-fade-in animate-slide-up" style={`animation-delay: ${index * 150}ms`}>
+            <div class="lg:w-1/2 lg:pr-12 lg:pl-0">
+              <div class="flex items-start gap-4 relative">
+                <!-- Timeline dot -->
+                <div class="absolute left-4 lg:left-1/2 transform lg:-translate-x-1/2 w-4 h-4 rounded-full bg-primary-500 border-4 border-white dark:border-dark-bg shadow-lg z-10 flex-shrink-0" aria-hidden="true"></div>
+
+                <div class="card p-6 w-full lg:ml-16 relative">
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="badge-primary">{exp.data.type}</span>
+                    <span class="text-sm text-gray-500 dark:text-gray-400">
+                      {new Date(exp.data.startDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                      {' '}
+                      {exp.data.current ? 'Present' : `– ${new Date(exp.data.endDate!).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}`}
+                    </span>
+                  </div>
+
+                  <h3 class="text-xl font-heading font-bold text-gray-900 dark:text-white mb-1">{exp.data.title}</h3>
+                  <p class="text-primary-500 font-medium mb-1">{exp.data.company}</p>
+                  <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                    {exp.data.location}
+                  </p>
+
+                  <p class="text-gray-600 dark:text-gray-300 mb-4">{exp.data.description}</p>
+
+                  {exp.data.achievements.length > 0 && (
+                    <ul class="space-y-2 mb-4" role="list">
+                      {exp.data.achievements.map(achievement => (
+                        <li class="flex items-start gap-2 text-gray-600 dark:text-gray-300">
+                          <svg class="w-5 h-5 text-primary-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                          <span>{achievement}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {exp.data.technologies.length > 0 && (
+                    <div class="flex flex-wrap gap-2">
+                      {exp.data.technologies.map(tech => (
+                        <span class="badge badge-primary">{tech}</span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Education Section -->
+    <div class="mt-16 pt-16 border-t border-gray-200 dark:border-dark-border">
+      <h3 class="text-2xl font-heading font-bold text-gray-900 dark:text-white text-center mb-12">Education</h3>
+
+      <div class="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {[
+          {
+            degree: 'Bachelor of Science in Computer Science',
+            school: 'Taguig City University',
+            location: 'General Santos Ave, Lower Bicutan, Taguig City',
+            period: 'Present',
+            current: true,
+          },
+          {
+            degree: 'Senior High School',
+            school: "Noah's Academy Inc.",
+            location: '48 Navy Rd, Manila, Metro Manila',
+            period: '2017 – 2019',
+            current: false,
+          },
+          {
+            degree: 'Junior High School',
+            school: 'Bagumbayan National High School',
+            location: 'Taguig, Metro Manila',
+            period: '2013 – 2017',
+            current: false,
+          },
+          {
+            degree: 'Elementary School',
+            school: 'Ricardo P. Cruz Sr. Elementary School',
+            location: 'Taguig, Metro Manila',
+            period: '2007 – 2013',
+            current: false,
+          },
+        ].map((edu, index) => (
+          <div class="card p-6 animate-fade-in animate-slide-up" style={`animation-delay: ${index * 100}ms`}>
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-xl bg-primary-500/10 flex items-center justify-center flex-shrink-0">
+                <svg class="w-6 h-6 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg>
+              </div>
+              <div class="flex-1">
+                <h4 class="text-lg font-heading font-bold text-gray-900 dark:text-white">{edu.degree}</h4>
+                <p class="text-primary-500 font-medium mb-1">{edu.school}</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mb-2 flex items-center gap-1">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /></svg>
+                  {edu.location}
+                </p>
+                <div class="flex items-center gap-2">
+                  <span class="text-sm text-gray-600 dark:text-gray-400">{edu.period}</span>
+                  {edu.current && <span class="badge-success">In Progress</span>}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

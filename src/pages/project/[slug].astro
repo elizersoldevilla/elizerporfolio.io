@@ -1,0 +1,200 @@
+---
+// Project Detail Page
+import { getCollection, getEntryBySlug } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import RelatedProjects from '@/components/RelatedProjects.astro';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map(project => ({
+    params: { slug: project.slug },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const siteURL = 'https://elizersoldevilla.github.io';
+const pageURL = `${siteURL}/project/${project.slug}`;
+---
+
+<Layout
+  title={project.data.title}
+  description={project.data.description}
+  canonicalURL={pageURL}
+>
+  <article class="lg:pl-72">
+    <!-- Hero Section -->
+    <section class="relative min-h-[50vh] flex items-end">
+      <div class="absolute inset-0 z-0">
+        <img src={project.data.image} alt="" class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-dark-bg/90 via-dark-bg/50 to-transparent"></div>
+      </div>
+
+      <div class="container-custom relative z-10 pb-16 text-white">
+        <div class="max-w-4xl">
+          <span class="inline-block px-3 py-1 rounded-full bg-primary-500/20 text-primary-300 text-sm font-medium mb-4">
+            {project.data.category.charAt(0).toUpperCase() + project.data.category.slice(1)} Project
+          </span>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-heading font-bold mb-4">{project.data.title}</h1>
+          <p class="text-xl text-gray-300 mb-6 max-w-2xl">{project.data.description}</p>
+
+          <div class="flex flex-wrap gap-4 mb-8">
+            <span class="badge-primary">{new Date(project.data.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – {project.data.endDate ? new Date(project.data.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present'}</span>
+            <span class="badge badge-success">{project.data.status.charAt(0).toUpperCase() + project.data.status.slice(1).replace('-', ' ')}</span>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            {project.data.projectUrl && (
+              <a href={project.data.projectUrl} target="_blank" rel="noopener noreferrer" class="btn-primary flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                Live Demo
+              </a>
+            )}
+            {project.data.githubUrl && (
+              <a href={project.data.githubUrl} target="_blank" rel="noopener noreferrer" class="btn-outline flex items-center gap-2">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.305-.536-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>
+                View Code
+              </a>
+            )}
+            <a href="/" class="btn-secondary flex items-center gap-2">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+              Back to Portfolio
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Project Details -->
+    <section class="section bg-white dark:bg-dark-bg">
+      <div class="container-custom lg:pl-72">
+        <div class="grid lg:grid-cols-3 gap-12">
+          <!-- Main Content -->
+          <div class="lg:col-span-2 space-y-12">
+            {project.data.longDescription && (
+              <div class="prose prose-lg dark:prose-invert max-w-none">
+                <h2 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-4">Overview</h2>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">{project.data.longDescription}</p>
+              </div>
+            )}
+
+            {project.data.highlights && project.data.highlights.length > 0 && (
+              <div>
+                <h2 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">Key Highlights</h2>
+                <ul class="space-y-3" role="list">
+                  {project.data.highlights.map(highlight => (
+                    <li class="flex items-start gap-3 p-4 bg-gray-50 dark:bg-dark-card rounded-xl border border-gray-100 dark:border-dark-border">
+                      <div class="w-8 h-8 rounded-lg bg-primary-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                      </div>
+                      <span class="text-gray-600 dark:text-gray-300">{highlight}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {project.data.challenges && project.data.challenges.length > 0 && (
+              <div>
+                <h2 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">Challenges Overcome</h2>
+                <ul class="space-y-3" role="list">
+                  {project.data.challenges.map(challenge => (
+                    <li class="flex items-start gap-3 p-4 bg-yellow-50 dark:bg-yellow-900/20 rounded-xl border border-yellow-100 dark:border-yellow-800">
+                      <div class="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+                      </div>
+                      <span class="text-gray-700 dark:text-gray-300">{challenge}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {project.data.outcomes && project.data.outcomes.length > 0 && (
+              <div>
+                <h2 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">Outcomes & Results</h2>
+                <ul class="space-y-3" role="list">
+                  {project.data.outcomes.map(outcome => (
+                    <li class="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-xl border border-green-100 dark:border-green-800">
+                      <div class="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                      </div>
+                      <span class="text-gray-700 dark:text-gray-300">{outcome}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <!-- Gallery -->
+            {project.data.images && project.data.images.length > 1 && (
+              <div>
+                <h2 class="text-2xl font-heading font-bold text-gray-900 dark:text-white mb-6">Project Gallery</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {project.data.images.map((image, index) => (
+                    <div class="relative aspect-video rounded-xl overflow-hidden">
+                      <img src={image} alt={`${project.data.title} - Screenshot ${index + 1}`} class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" loading="lazy" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <!-- Sidebar -->
+          <div class="space-y-6">
+            <!-- Tech Stack -->
+            <div class="card p-6 sticky top-24">
+              <h3 class="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 16l4-16M6 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
+                Tech Stack
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {project.data.technologies.map(tech => (
+                  <span class="badge-primary">{tech}</span>
+                ))}
+              </div>
+            </div>
+
+            <!-- Project Info -->
+            <div class="card p-6 sticky top-24">
+              <h3 class="text-lg font-heading font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                Project Info
+              </h3>
+              <dl class="space-y-4">
+                <div>
+                  <dt class="text-sm text-gray-500 dark:text-gray-400">Category</dt>
+                  <dd class="font-medium text-gray-900 dark:text-white capitalize">{project.data.category}</dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-gray-500 dark:text-gray-400">Duration</dt>
+                  <dd class="font-medium text-gray-900 dark:text-white">
+                    {new Date(project.data.startDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })} – {project.data.endDate ? new Date(project.data.endDate).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : 'Present'}
+                  </dd>
+                </div>
+                <div>
+                  <dt class="text-sm text-gray-500 dark:text-gray-400">Status</dt>
+                  <dd class="font-medium text-gray-900 dark:text-white capitalize">{project.data.status.replace('-', ' ')}</dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Related Projects -->
+    <section class="section bg-gray-50 dark:bg-dark-card">
+      <div class="container-custom lg:pl-72">
+        <h2 class="text-3xl font-heading font-bold text-gray-900 dark:text-white text-center mb-12">Related Projects</h2>
+        <RelatedProjects currentSlug={project.slug} />
+      </div>
+    </section>
+  </article>
+</Layout>
+
+<script>
+  // Simple related projects component inline
+  // This will be enhanced with a proper component
+</script>

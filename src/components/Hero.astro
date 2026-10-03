@@ -1,0 +1,186 @@
+---
+// Hero Section Component
+---
+
+<section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-primary-50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-card">
+  <!-- Background pattern -->
+  <div class="absolute inset-0 opacity-5" aria-hidden="true">
+    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+      <defs>
+        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
+          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
+        </pattern>
+      </defs>
+      <rect width="100" height="100" fill="url(#grid)"/>
+    </svg>
+  </div>
+
+  <!-- Floating shapes -->
+  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
+    <div class="absolute top-20 left-10 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 0s;"></div>
+    <div class="absolute bottom-20 right-10 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+    <div class="absolute top-1/2 left-1/4 w-24 h-24 bg-primary-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+  </div>
+
+  <div class="container-custom relative z-10 py-20 lg:pl-72">
+    <div class="max-w-3xl">
+      <div class="animate-fade-in animate-slide-up">
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-6 border border-primary-500/20">
+          <span class="relative flex h-2 w-2">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-500 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+          </span>
+          Currently Open to Opportunities
+        </div>
+
+        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-gray-900 dark:text-white leading-tight mb-6">
+          Elizer John B. Soldevilla
+        </h1>
+
+        <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl leading-relaxed">
+          I'm a
+          <span class="relative h-8">
+            <span id="typed-text" class="absolute inset-0 text-primary-500 font-medium"></span>
+            <span class="absolute inset-0 border-r-2 border-primary-500 animate-blink" aria-hidden="true"></span>
+          </span>
+        </p>
+
+        <p class="text-lg text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
+          IT Technician & Programmer building scalable hospital systems and web applications.
+          Passionate about clean code, system architecture, and solving real-world problems.
+        </p>
+
+        <div class="flex flex-wrap gap-4">
+          <a href="#portfolio" class="btn-primary group">
+            View Projects
+            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+          </a>
+          <a href="#contact" class="btn-outline">
+            Get In Touch
+          </a>
+          <a href="/assets/cv-elizer-soldevilla.pdf" download class="btn-secondary">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            Download CV
+          </a>
+        </div>
+
+        <!-- Stats -->
+        <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-gray-200 dark:border-dark-border">
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="5">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Major Systems</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="10">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Projects</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="2">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Years Experience</div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="500">0</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Users Supported</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll indicator -->
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
+    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+  </div>
+</section>
+
+<script>
+  // Typed text animation
+  const typedText = document.getElementById('typed-text');
+  const phrases = [
+    'IT Technician',
+    'Programmer',
+    'Web Developer',
+    'System Architect',
+    'Problem Solver'
+  ];
+
+  let phraseIndex = 0;
+  let charIndex = 0;
+  let isDeleting = false;
+  let typingSpeed = 100;
+
+  function type() {
+    const currentPhrase = phrases[phraseIndex];
+
+    if (isDeleting) {
+      typedText.textContent = currentPhrase.substring(0, charIndex - 1);
+      charIndex--;
+      typingSpeed = 50;
+    } else {
+      typedText.textContent = currentPhrase.substring(0, charIndex + 1);
+      charIndex++;
+      typingSpeed = 100;
+    }
+
+    if (!isDeleting && charIndex === currentPhrase.length) {
+      isDeleting = true;
+      typingSpeed = 2000;
+    } else if (isDeleting && charIndex === 0) {
+      isDeleting = false;
+      phraseIndex = (phraseIndex + 1) % phrases.length;
+      typingSpeed = 500;
+    }
+
+    setTimeout(type, typingSpeed);
+  }
+
+  // Counter animation
+  const counters = document.querySelectorAll('[data-count]');
+  const animateCounters = () => {
+    counters.forEach(counter => {
+      const target = parseInt(counter.dataset.count);
+      const duration = 2000;
+      const step = target / (duration / 16);
+      let current = 0;
+
+      const updateCounter = () => {
+        current += step;
+        if (current < target) {
+          counter.textContent = Math.floor(current);
+          requestAnimationFrame(updateCounter);
+        } else {
+          counter.textContent = target;
+        }
+      };
+
+      updateCounter();
+    });
+  };
+
+  // Intersection observer for counter animation
+  const heroSection = document.getElementById('hero');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        animateCounters();
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  observer.observe(heroSection);
+
+  // Start typing animation
+  type();
+</script>
+
+<style>
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .animate-blink {
+    animation: blink 1s infinite;
+  }
+</style>

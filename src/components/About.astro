@@ -1,0 +1,97 @@
+---
+// About Section Component
+---
+
+<section id="about" class="section bg-white dark:bg-dark-bg" aria-labelledby="about-heading">
+  <div class="container-custom lg:pl-72">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <!-- Image -->
+      <div class="relative animate-fade-in animate-slide-up" style="animation-delay: 100ms;">
+        <div class="relative">
+          <img
+            src="/images/Soldevillabg.jpg"
+            alt="Elizer Soldevilla working"
+            class="w-full rounded-2xl shadow-2xl border border-gray-100 dark:border-dark-border"
+          />
+          <!-- Experience badge -->
+          <div class="absolute -bottom-6 -right-6 bg-white dark:bg-dark-card p-6 rounded-xl shadow-xl border border-gray-100 dark:border-dark-border animate-scale-in" style="animation-delay: 300ms;">
+            <div class="text-3xl font-heading font-bold text-primary-500">2+</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Years Experience</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="animate-fade-in animate-slide-up" style="animation-delay: 200ms;">
+        <div class="mb-8">
+          <span class="inline-block px-3 py-1 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">About Me</span>
+          <h2 id="about-heading" class="section-title">Computer Science Graduate & IT Professional</h2>
+        </div>
+
+        <p class="text-lg text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+          As a Computer Science student and IT professional, I am a curious explorer of the digital realm,
+          driven by a passion for technology and its limitless possibilities. With every line of code I write
+          and every problem I solve, I am constantly expanding my knowledge and pushing the boundaries of innovation.
+        </p>
+
+        <p class="text-gray-500 dark:text-gray-400 mb-8 leading-relaxed">
+          Currently serving as an IT Technician/Programmer at Taguig City General Hospital, where I develop
+          and maintain critical hospital information systems while providing technical support to 300+ staff members.
+          My experience spans full-stack web development, system architecture, database management, and IT infrastructure.
+        </p>
+
+        <!-- Personal Info -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+          <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border">
+            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Birthday</div>
+              <div class="font-medium text-gray-900 dark:text-white">25 July 2001</div>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border">
+            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Email</div>
+              <a href="mailto:elizersoldevilla123@gmail.com" class="font-medium text-gray-900 dark:text-white hover:text-primary-500 transition-colors">elizersoldevilla123@gmail.com</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border">
+            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Phone</div>
+              <a href="tel:+639184837312" class="font-medium text-gray-900 dark:text-white hover:text-primary-500 transition-colors">+63 918 483 7312</a>
+            </div>
+          </div>
+          <div class="flex items-center gap-3 p-4 bg-gray-50 dark:bg-dark-card rounded-lg border border-gray-100 dark:border-dark-border">
+            <div class="w-10 h-10 rounded-lg bg-primary-500/10 flex items-center justify-center">
+              <svg class="w-5 h-5 text-primary-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+            </div>
+            <div>
+              <div class="text-xs text-gray-500 dark:text-gray-400">Location</div>
+              <div class="font-medium text-gray-900 dark:text-white">Taguig City, Philippines</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Interests -->
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Interests & Hobbies</h3>
+          <div class="flex flex-wrap gap-2">
+            <span class="badge-primary">Cycling</span>
+            <span class="badge-primary">Open Source</span>
+            <span class="badge-primary">Tech Blogs</span>
+            <span class="badge-primary">System Design</span>
+            <span class="badge-primary">Photography</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

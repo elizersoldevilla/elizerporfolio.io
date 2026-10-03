@@ -1,0 +1,47 @@
+---
+// Related Projects Component
+import { getCollection } from 'astro:content';
+
+interface Props {
+  currentSlug: string;
+}
+
+const { currentSlug } = Astro.props;
+const allProjects = await getCollection('projects');
+const relatedProjects = allProjects
+  .filter(p => p.slug !== currentSlug)
+  .sort(() => Math.random() - 0.5)
+  .slice(0, 3);
+---
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {relatedProjects.map((project, index) => (
+    <article class="card overflow-hidden animate-fade-in animate-slide-up" style={`animation-delay: ${index * 100}ms`}>
+      <a href={`/project/${project.slug}`} class="block">
+        <div class="relative aspect-video overflow-hidden">
+          <img
+            src={project.data.image}
+            alt=""
+            class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+            loading="lazy"
+          />
+        </div>
+        <div class="p-5">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="badge-primary text-xs">{project.data.category}</span>
+          </div>
+          <h3 class="font-heading font-bold text-gray-900 dark:text-white mb-2 line-clamp-1 group-hover:text-primary-500 transition-colors">{project.data.title}</h3>
+          <p class="text-sm text-gray-500 dark:text-gray-400 mb-3 line-clamp-2">{project.data.description}</p>
+          <div class="flex flex-wrap gap-1">
+            {project.data.technologies.slice(0, 3).map(tech => (
+              <span class="badge bg-gray-100 dark:bg-dark-border text-gray-600 dark:text-gray-300 text-xs">{tech}</span>
+            ))}
+            {project.data.technologies.length > 3 && (
+              <span class="badge bg-gray-100 dark:bg-dark-border text-gray-500 dark:text-gray-400 text-xs">+{project.data.technologies.length - 3}</span>
+            )}
+          </div>
+        </div>
+      </a>
+    </article>
+  ))}
+</div>

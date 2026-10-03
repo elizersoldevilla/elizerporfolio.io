@@ -1,0 +1,174 @@
+---
+// Main Layout Component
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import ThemeToggle from '@/components/ThemeToggle.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  ogImage?: string;
+  canonicalURL?: string;
+  noIndex?: boolean;
+}
+
+const {
+  title,
+  description = 'Elizer Soldevilla - IT Technician & Programmer. Building scalable hospital systems and web applications with PHP, Laravel, Vue.js, and modern technologies.',
+  ogImage = '/images/og-image.jpg',
+  canonicalURL,
+  noIndex = false
+} = Astro.props;
+
+const siteURL = 'https://elizersoldevilla.github.io';
+const pageURL = canonicalURL || `${siteURL}${Astro.url.pathname}`;
+const pageTitle = title ? `${title} | Elizer Soldevilla` : 'Elizer Soldevilla | IT Technician & Programmer';
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="generator" content={Astro.generator}>
+
+  <!-- Primary Meta Tags -->
+  <title>{pageTitle}</title>
+  <meta name="title" content={pageTitle}>
+  <meta name="description" content={description}>
+  <meta name="keywords" content="Elizer Soldevilla, IT Technician, Programmer, Web Developer, Laravel, PHP, Vue.js, Portfolio, Taguig City General Hospital">
+  <meta name="author" content="Elizer Soldevilla">
+  <meta name="robots" content={noIndex ? 'noindex, nofollow' : 'index, follow'}>
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href={pageURL}>
+
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content={pageURL}>
+  <meta property="og:title" content={pageTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:image" content={`${siteURL}${ogImage}`}>
+
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content={pageURL}>
+  <meta property="twitter:title" content={pageTitle}>
+  <meta property="twitter:description" content={description}>
+  <meta property="twitter:image" content={`${siteURL}${ogImage}`}>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.png">
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+  <link rel="manifest" href="/site.webmanifest">
+
+  <!-- Preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json" set:html={JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Elizer Soldevilla',
+    url: siteURL,
+    image: `${siteURL}/images/Soldevilla.jpg`,
+    sameAs: [
+      'https://github.com/elizersoldevilla',
+      'https://linkedin.com/in/elizersoldevilla',
+      'https://twitter.com/Ejbike2',
+      'https://www.instagram.com/elizersoldevilla/'
+    ],
+    jobTitle: 'IT Technician / Programmer',
+    worksFor: {
+      '@type': 'Organization',
+      name: 'Taguig City General Hospital'
+    },
+    knowsAbout: ['PHP', 'Laravel', 'Vue.js', 'MySQL', 'PostgreSQL', 'JavaScript', 'TypeScript', 'System Architecture', 'Database Design', 'API Development'],
+    alumniOf: {
+      '@type': 'EducationalOrganization',
+      name: 'Taguig City University'
+    }
+  }, null, 2)}></script>
+</head>
+<body class="font-sans antialiased">
+  <!-- Header -->
+  <Header />
+
+  <!-- Theme Toggle -->
+  <ThemeToggle />
+
+  <!-- Main Content -->
+  <main id="main" class="lg:pl-72 min-h-screen">
+    <slot />
+  </main>
+
+  <!-- Footer -->
+  <Footer />
+
+  <!-- Back to Top -->
+  <button
+    class="back-to-top fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-primary-500 text-white flex items-center justify-center shadow-lg opacity-0 invisible translate-y-4 transition-all duration-300 hover:bg-primary-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 dark:focus:ring-offset-dark-bg"
+    aria-label="Scroll to top"
+  >
+    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" /></svg>
+  </button>
+
+  <!-- Global Scripts -->
+  <script>
+    // Back to top button
+    const backToTop = document.querySelector('.back-to-top');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        backToTop.classList.remove('opacity-0', 'invisible', 'translate-y-4');
+        backToTop.classList.add('opacity-100', 'visible', 'translate-y-0');
+      } else {
+        backToTop.classList.add('opacity-0', 'invisible', 'translate-y-4');
+        backToTop.classList.remove('opacity-100', 'visible', 'translate-y-0');
+      }
+    });
+
+    backToTop.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Active nav link on scroll
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navLinks.forEach(link => {
+            link.classList.toggle('text-white', link.getAttribute('href') === `#${id}`);
+            link.classList.toggle('bg-gray-800/50', link.getAttribute('href') === `#${id}`);
+            link.classList.toggle('dark:bg-gray-700/50', link.getAttribute('href') === `#${id}`);
+          });
+        }
+      });
+    }, { rootMargin: '-50% 0px -50% 0px' });
+
+    sections.forEach(section => observer.observe(section));
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        const targetId = this.getAttribute('href');
+        if (targetId === '#') return;
+
+        const target = document.querySelector(targetId);
+        if (target) {
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          target.focus({ preventScroll: true });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
