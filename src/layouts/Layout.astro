@@ -45,6 +45,15 @@ const ogImageURL = `${siteURL}${withBase(ogImage)}`;
 <html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
+  <!--
+    Marks that scripting is available, before first paint.
+
+    Only `html.js .card-fade` hides a card, so if this never runs (JS blocked,
+    chunk failed to load) the cards are simply visible rather than stuck at
+    opacity 0. Inlined and synchronous on purpose: a deferred or async script
+    would run after paint and flash the cards visible before hiding them.
+  -->
+  <script is:inline>document.documentElement.classList.add('js');</script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="generator" content={Astro.generator}>
 

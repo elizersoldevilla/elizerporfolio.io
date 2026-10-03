@@ -82,14 +82,22 @@
    * A CSS animation outranks an inline transform in the cascade, so a card
    * cannot carry both an `animate-*` entrance and pointer-driven tilt: the
    * animation keeps owning `transform` and the tilt never becomes visible.
-   * Cards therefore fade in via `opacity` only, which composes cleanly with
-   * the tilt transform written by utils/tilt.ts.
+   * Cards therefore fade in via `opacity` only, which composes cleanly with the
+   * tilt transform written by utils/tilt.ts.
+   *
+   * Visible is the default and only `html.js` hides the card. Anything that
+   * stops the reveal script from running - a JS error, a blocked chunk, a
+   * disabled observer - then leaves the card readable instead of invisible.
    */
   .card-fade {
+    @apply opacity-100;
+  }
+
+  html.js .card-fade {
     @apply opacity-0 transition-opacity duration-700 ease-out;
   }
 
-  .card-fade.is-visible {
+  html.js .card-fade.is-visible {
     @apply opacity-100;
   }
 

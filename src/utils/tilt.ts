@@ -39,17 +39,58 @@ function isOnScreen(el: HTMLElement): boolean {
   return r.bottom > 0 && r.right > 0 && r.top < window.innerHeight && r.left < window.innerWidth;
 }
 
-/**
- * Reveals every still-hidden fade card that is on screen.
+/*
+ * Reveal sweep.
  *
- * Content must never be permanently invisible: a card whose container is
- * collapsed (the portfolio filter) will never satisfy its observer, so the
- * load pass is the backstop that guarantees readability.
+ * IntersectionObserver drives the scroll-linked timing, but it is not on its own
+ * trustworthy: delivery depends on the rendering lifecycle, so a card can be
+ * scrolled past without ever being reported as intersecting and would sit at
+ * opacity 0. The sweep is the deterministic backstop. It only ever looks at the
+ * shrinking set of cards that are still hidden, so the steady-state cost is a
+ * single empty set, and it stops for good once everything is revealed.
  */
-function revealOnLoad(): void {
-  for (const el of document.querySelectorAll<HTMLElement>('.card-fade:not(.is-visible)')) {
-    if (isOnScreen(el)) el.classList.add('is-visible');
+const pending = new Set<HTMLElement>();
+let sweepQueued = false;
+
+function sweep(): void {
+  sweepQueued = false;
+  for (const el of [...pending]) {
+    if (isOnScreen(el)) {
+      el.classList.add('is-visible');
+      pending.delete(el);
+    }
   }
+}
+
+function queueSweep(): void {
+  if (sweepQueued) return;
+  sweepQueued = true;
+  // setTimeout rather than rAF: rAF is suspended in a background tab, and this
+  // is exactly the case where a card must not be left hidden.
+  setTimeout(sweep, 60);
+}
+
+function watchForReveal(el: HTMLElement, show: () => void): void {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        show();
+        observer.unobserve(entry.target);
+      }
+    },
+    { threshold: 0.12 }
+  );
+  observer.observe(el);
+
+  pending.add(el);
+  if (isOnScreen(el)) show();
+
+  const showAndStop = () => {
+    show();
+    pending.delete(el);
+  };
+  el.addEventListener('portfolio:reveal', showAndStop);
 }
 
 export function initTilt(root: ParentNode = document): void {
@@ -75,42 +116,7 @@ export function initTilt(root: ParentNode = document): void {
      * would leave their cards stuck at opacity 0, i.e. invisible content.
      */
     if (el.classList.contains('card-fade')) {
-      const show = () => el.classList.add('is-visible');
-
-      const reveal = new IntersectionObserver(
-        (entries) => {
-          for (const entry of entries) {
-            if (!entry.isIntersecting) continue;
-            show();
-            reveal.unobserve(entry.target);
-          }
-        },
-        { threshold: 0.12 }
-      );
-      reveal.observe(el);
-
-      /*
-       * A card inside a collapsed container (the portfolio filter hides
-       * non-matching panels) can never intersect the viewport, so it would stay
-       * at opacity 0. Components that show such a card dispatch
-       * `portfolio:reveal` on it. The load-time pass below then catches anything
-       * still hidden once layout has settled, so content is never unreachable.
-       */
-      el.addEventListener('portfolio:reveal', show);
-
-      /*
-       * Reveal anything already on screen at load.
-       *
-       * A bare requestAnimationFrame is unreliable here: rAF callbacks are
-       * throttled or skipped while the tab is backgrounded or the page is
-       * still settling, which left cards stuck at opacity 0. The observer above
-       * normally covers on-screen cards, but an explicit check on load plus a
-       * load-event pass guarantees it.
-       */
-      if (isOnScreen(el)) show();
-
-      if (document.readyState === 'complete') revealOnLoad();
-      else window.addEventListener('load', revealOnLoad, { once: true });
+      watchForReveal(el, () => el.classList.add('is-visible'));
     }
 
     const reset = () => {
@@ -187,4 +193,37 @@ export function initTilt(root: ParentNode = document): void {
       io.observe(el);
     }
   }
+
+  if (!pending.size) return;
+
+  /*
+   * Sweep on scroll and resize. Both are passive, and the handler is a single
+   * boolean check once everything has been revealed.
+   */
+  window.addEventListener('scroll', queueSweep, { passive: true });
+  window.addEventListener('resize', queueSweep, { passive: true });
+
+  /*
+   * Final backstop: after the page has settled, reveal anything left.
+   *
+   * By this point a reader has had time to scroll; leaving a card hidden because
+   * an observer did not fire is far worse than showing it without the
+   * scroll-linked timing. Cards still far below the fold appear when reached,
+   * via the sweep above.
+   */
+  const revealAll = () => {
+    for (const el of [...pending]) {
+      el.classList.add('is-visible');
+      pending.delete(el);
+    }
+  };
+
+  const startTimers = () => {
+    queueSweep();
+    window.setTimeout(revealAll, 1500);
+    window.setTimeout(revealAll, 4000);
+  };
+
+  if (document.readyState === 'complete') startTimers();
+  else window.addEventListener('load', startTimers, { once: true });
 }
