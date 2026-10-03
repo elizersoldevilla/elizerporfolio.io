@@ -5,6 +5,7 @@ import Footer from '@/components/Footer.astro';
 import ThemeToggle from '@/components/ThemeToggle.astro';
 import { withBase } from '@/utils/paths';
 import '@/styles/global.css';
+import '@/styles/depth.css';
 
 interface Props {
   title: string;
@@ -142,6 +143,15 @@ const ogImageURL = `${siteURL}${withBase(ogImage)}`;
 
   <!-- Global Scripts -->
   <script>
+    // Static import inside the client script. A frontmatter import is stripped
+    // from the browser bundle, and a dynamic import() gets rewritten by Astro,
+    // so this is the only form that reliably reaches the page.
+    import { initTilt } from '@/utils/tilt';
+
+    // Site-wide 3D depth. initTilt skips coarse pointers and reduced-motion
+    // users, so this is safe to call unconditionally.
+    initTilt();
+
     // Back to top button
     const backToTop = document.querySelector('.back-to-top');
     window.addEventListener('scroll', () => {
@@ -191,6 +201,10 @@ const ogImageURL = `${siteURL}${withBase(ogImage)}`;
         }
       });
     });
+
+    // Site-wide 3D depth. initTilt skips coarse pointers and reduced-motion
+    // users, so this is safe to call unconditionally.
+    initTilt();
   </script>
 </body>
 </html>

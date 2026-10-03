@@ -1,0 +1,193 @@
+/**
+ * Site-wide 3D depth.
+ *
+ * Everything here is CSS 3D transforms: no WebGL, no extra dependency. The
+ * goal is a sense of layered depth, not a toy, so motion stays small and every
+ * effect is switched off for reduced-motion users.
+ *
+ * Two ideas carry the effect:
+ *   1. `.depth-layer` elements sit on different Z planes inside a perspective
+ *      container, so parallax on scroll/move separates them in depth.
+ *   2. `[data-tilt]` elements tip toward the pointer (see utils/tilt.ts).
+ *
+ * Imported from the layout, so it needs the Tailwind directives. `important`
+ * in `layer` puts these rules after Tailwind's base/utilities without needing
+ * !important on each declaration.
+ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  /* ---- Perspective containers ---------------------------------------- */
+
+  .perspective-scene {
+    perspective: 1200px;
+    perspective-origin: 50% 40%;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  /* ---- Depth layers ---------------------------------------------------- */
+
+  /*
+   * `--depth` is the Z distance. Values are small on purpose: past roughly
+   * -200px with this perspective the parallax offset becomes large enough to
+   * make text hard to track.
+   */
+  .depth-layer {
+    transform: translateZ(var(--depth, 0px));
+    transform-style: preserve-3d;
+    will-change: transform;
+  }
+
+  /* A soft contact shadow that sells the lift. */
+  .depth-shadow {
+    box-shadow:
+      0 var(--lift-blur, 40px) var(--lift-spread, 18px) rgba(2, 8, 23, 0.1),
+      0 2px 6px rgba(2, 8, 23, 0.06);
+  }
+
+  .dark .depth-shadow {
+    box-shadow:
+      0 var(--lift-blur, 40px) var(--lift-spread, 18px) rgba(0, 0, 0, 0.5),
+      0 2px 6px rgba(0, 0, 0, 0.4);
+  }
+
+  /* ---- Tilt targets ---------------------------------------------------- */
+
+  /*
+   * transform-style is intentionally NOT preserve-3d here. Keeping the card a
+   * flat plane avoids its children (text, badges) being flattened onto the
+   * same plane, which is what makes naive tilt effects look broken.
+   */
+  [data-tilt] {
+    transition:
+      transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-tilt]:hover {
+    box-shadow: var(--tilt-shadow);
+  }
+
+  /* Entrance lift, used when a card scrolls into view. */
+  [data-tilt='enter'] {
+    transform: perspective(900px) rotateX(6deg) translateY(28px) scale(0.96);
+    opacity: 0;
+    transition:
+      transform 700ms cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 500ms ease-out,
+      box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  [data-tilt='enter'].is-tilting {
+    transform: perspective(900px) rotateX(0deg) translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  /*
+   * While the pointer is driving the transform, the CSS transition would lag
+   * behind the cursor. tilt.ts marks the element so the transition is dropped.
+   */
+  [data-tilt-ready='true'] {
+    transition: box-shadow 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* ---- 3D grid backdrop (hero) ---------------------------------------- */
+
+  /*
+   * A perspective floor grid. Built from two linear-gradients on a plane that
+   * is rotated away from the viewer, so it reads as a receding surface.
+   */
+  .grid-floor {
+    position: absolute;
+    inset: -20% -10% 0;
+    height: 130%;
+    background-image:
+      linear-gradient(to right, rgb(20 157 221 / 0.16) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(20 157 221 / 0.16) 1px, transparent 1px);
+    background-size: 46px 46px;
+    transform: rotateX(62deg);
+    transform-origin: 50% 100%;
+    mask-image: linear-gradient(to top, rgb(0 0 0 / 0.85), transparent 72%);
+    -webkit-mask-image: linear-gradient(to top, rgb(0 0 0 / 0.85), transparent 72%);
+    pointer-events: none;
+  }
+
+  .dark .grid-floor {
+    background-image:
+      linear-gradient(to right, rgb(20 157 221 / 0.22) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(20 157 221 / 0.22) 1px, transparent 1px);
+  }
+
+  /* ---- Floating tech shapes ------------------------------------------- */
+
+  /*
+   * Wireframe cubes that drift slowly. Built with stacked pseudo-element faces
+   * so they read as 3D boxes rather than flat squares.
+   */
+  .float-cube {
+    position: absolute;
+    width: var(--size, 40px);
+    height: var(--size, 40px);
+    transform-style: preserve-3d;
+    animation: cube-drift var(--dur, 18s) ease-in-out infinite;
+    animation-delay: var(--delay, 0s);
+    pointer-events: none;
+  }
+
+  .float-cube > span {
+    position: absolute;
+    inset: 0;
+    border: 1.5px solid rgb(20 157 221 / 0.4);
+    border-radius: 6px;
+    background: rgb(20 157 221 / 0.04);
+  }
+
+  /* Top, front and side faces give the flat square volume. */
+  .float-cube > span:nth-child(1) {
+    transform: translateZ(calc(var(--size, 40px) / 2));
+  }
+  .float-cube > span:nth-child(2) {
+    transform: rotateY(90deg) translateZ(calc(var(--size, 40px) / 2));
+  }
+  .float-cube > span:nth-child(3) {
+    transform: rotateX(90deg) translateZ(calc(var(--size, 40px) / 2));
+  }
+
+  @keyframes cube-drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) rotateX(-18deg) rotateY(24deg);
+    }
+    33% {
+      transform: translate3d(14px, -26px, 30px) rotateX(-28deg) rotateY(52deg);
+    }
+    66% {
+      transform: translate3d(-10px, -12px, 12px) rotateX(-8deg) rotateY(-14deg);
+    }
+  }
+
+  /* ---- Reduced motion -------------------------------------------------- */
+
+  /*
+   * Turn the whole system off in one place. Animations are cancelled rather
+   * than merely shortened, because a slowly spinning cube is exactly the kind
+   * of motion this preference exists to suppress.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .float-cube,
+    .grid-floor,
+    [data-tilt],
+    [data-tilt='enter'] {
+      animation: none !important;
+      transition: none !important;
+      transform: none !important;
+      opacity: 1 !important;
+    }
+  }
+}

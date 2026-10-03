@@ -75,10 +75,12 @@ const IMG_H = 600;
     >
       {projects.map((project, index) => (
         <article
-          class="project-card card animate-fade-in animate-slide-up overflow-hidden"
+          class="project-card card card-fade depth-shadow overflow-hidden"
           style={`animation-delay: ${index * 60}ms`}
           data-category={project.data.category}
           data-featured={project.data.featured ? 'true' : 'false'}
+          data-tilt
+          data-tilt-max="6"
         >
           <a
             href={withBase(`/project/${project.slug}/`)}
@@ -165,7 +167,12 @@ const IMG_H = 600;
         card.dataset.category === key;
 
       card.classList.toggle('hidden', !match);
-      if (match) visible += 1;
+      if (match) {
+        visible += 1;
+        // A card inside a panel that was hidden could never have triggered its
+        // scroll-in reveal, so ask it to show itself now.
+        card.dispatchEvent(new CustomEvent('portfolio:reveal'));
+      }
     });
 
     buttons.forEach((btn) => {
@@ -193,4 +200,23 @@ const IMG_H = 600;
   buttons.forEach((btn) => {
     btn.addEventListener('click', () => applyFilter(btn.dataset.filter ?? 'all'));
   });
+
+  /*
+   * A card in a panel that the default filter hides never intersects the
+   * viewport, so its scroll-reveal observer cannot fire and it would sit at
+   * opacity 0. Reveal whatever the current filter is showing once the page has
+   * loaded, so the default view is never full of blank cards.
+   */
+  function revealVisible() {
+    for (const card of document.querySelectorAll<HTMLElement>('.project-card:not(.is-visible)')) {
+      if (card.classList.contains('hidden')) continue;
+      const r = card.getBoundingClientRect();
+      if (r.bottom > 0 && r.top < window.innerHeight) {
+        card.dispatchEvent(new CustomEvent('portfolio:reveal'));
+      }
+    }
+  }
+
+  if (document.readyState === 'complete') revealVisible();
+  else window.addEventListener('load', revealVisible, { once: true });
 </script>

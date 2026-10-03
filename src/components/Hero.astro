@@ -1,108 +1,127 @@
 ---
 // Hero Section Component
 import { withBase } from '@/utils/paths';
+
+/**
+ * Floating wireframe cubes. Position/size/delay are inlined per instance via
+ * style so the markup stays declarative.
+ */
+const cubes = [
+  { top: '14%', left: '8%', size: 46, dur: 20, delay: 0 },
+  { top: '62%', left: '16%', size: 30, dur: 16, delay: 1.5 },
+  { top: '24%', right: '12%', size: 34, dur: 22, delay: 0.8 },
+  { top: '70%', right: '22%', size: 54, dur: 18, delay: 2.4 },
+  { top: '44%', left: '46%', size: 24, dur: 15, delay: 3.2 },
+  { bottom: '18%', left: '34%', size: 38, dur: 24, delay: 1.1 },
+];
 ---
 
-<section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-primary-50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-card">
-  <!-- Background pattern -->
-  <div class="absolute inset-0 opacity-5" aria-hidden="true">
-    <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <defs>
-        <pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse">
-          <path d="M 10 0 L 0 0 0 10" fill="none" stroke="currentColor" stroke-width="0.5"/>
-        </pattern>
-      </defs>
-      <rect width="100" height="100" fill="url(#grid)"/>
-    </svg>
+<section
+  id="hero"
+  class="perspective-scene relative flex min-h-screen items-center justify-center overflow-hidden bg-gradient-to-br from-gray-50 via-white to-primary-50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-card"
+  data-hero
+>
+  <!-- Receding 3D grid floor -->
+  <div class="grid-floor" aria-hidden="true"></div>
+
+  <!-- Floating wireframe cubes -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    {
+      cubes.map((c) => (
+        <div
+          class="float-cube"
+          style={`top:${c.top};left:${c.left};right:${c.right ?? 'auto'};--size:${c.size}px;--dur:${c.dur}s;--delay:${c.delay}s;`}
+        >
+          <span /><span /><span />
+        </div>
+      ))
+    }
   </div>
 
-  <!-- Floating shapes -->
-  <div class="absolute inset-0 pointer-events-none" aria-hidden="true">
-    <div class="absolute top-20 left-10 w-32 h-32 bg-primary-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 0s;"></div>
-    <div class="absolute bottom-20 right-10 w-40 h-40 bg-primary-500/10 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-    <div class="absolute top-1/2 left-1/4 w-24 h-24 bg-primary-500/5 rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+  <!-- Soft depth glows -->
+  <div class="pointer-events-none absolute inset-0" aria-hidden="true">
+    <div class="depth-layer absolute left-[10%] top-[18%] h-32 w-32 rounded-full bg-primary-500/10 blur-3xl" style="--depth:-40px"></div>
+    <div class="depth-layer absolute bottom-[20%] right-[12%] h-40 w-40 rounded-full bg-primary-500/10 blur-3xl" style="--depth:-70px"></div>
   </div>
 
   <div class="container-custom relative z-10 py-20 lg:pl-72">
     <div class="max-w-3xl">
       <div class="animate-fade-in animate-slide-up">
-        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-6 border border-primary-500/20">
+        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-primary-500/20 bg-primary-500/10 px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400">
           <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-500 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+            <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary-500 opacity-75"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-primary-500"></span>
           </span>
           Currently Open to Opportunities
         </div>
 
-        <h1 class="text-5xl sm:text-6xl lg:text-7xl font-heading font-bold text-gray-900 dark:text-white leading-tight mb-6">
+        <h1 class="depth-layer mb-6 font-heading text-5xl font-bold leading-tight text-gray-900 dark:text-white sm:text-6xl lg:text-7xl" style="--depth:34px">
           Elizer John B. Soldevilla
         </h1>
 
-        <p class="text-xl sm:text-2xl text-gray-600 dark:text-gray-300 mb-8 max-w-2xl leading-relaxed">
+        <p class="depth-layer mb-8 max-w-2xl text-xl text-gray-600 dark:text-gray-300 sm:text-2xl" style="--depth:22px">
           I'm a
-          <span class="relative h-8">
-            <span id="typed-text" class="absolute inset-0 text-primary-500 font-medium"></span>
-            <span class="absolute inset-0 border-r-2 border-primary-500 animate-blink" aria-hidden="true"></span>
+          <span class="relative inline-block h-8">
+            <span id="typed-text" class="absolute inset-0 font-medium text-primary-500"></span>
+            <span class="animate-blink absolute inset-0 border-r-2 border-primary-500" aria-hidden="true"></span>
           </span>
         </p>
 
-        <p class="text-lg text-gray-500 dark:text-gray-400 mb-10 max-w-xl leading-relaxed">
+        <p class="depth-layer mb-10 max-w-xl text-lg leading-relaxed text-gray-500 dark:text-gray-400" style="--depth:14px">
           IT Technician & Programmer building scalable hospital systems and web applications.
           Passionate about clean code, system architecture, and solving real-world problems.
         </p>
 
-        <div class="flex flex-wrap gap-4">
+        <div class="depth-layer flex flex-wrap gap-4" style="--depth:8px">
           <a href="#portfolio" class="btn-primary group">
             View Projects
-            <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+            <svg class="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
           </a>
           <a href="#contact" class="btn-outline">
             Get In Touch
           </a>
           <a href={withBase('/assets/cv-elizer-soldevilla.pdf')} download class="btn-secondary">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            <svg class="mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
             Download CV
           </a>
         </div>
 
-        <!-- Stats -->
-        <div class="mt-16 grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-gray-200 dark:border-dark-border">
-          <div class="text-center">
-            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="5">0</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Major Systems</div>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="10">0</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Projects</div>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="2">0</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Years Experience</div>
-          </div>
-          <div class="text-center">
-            <div class="text-3xl sm:text-4xl font-heading font-bold text-primary-500" data-count="500">0</div>
-            <div class="text-sm text-gray-500 dark:text-gray-400 mt-1">Users Supported</div>
-          </div>
-        </div>
+        <!-- Stats, each on its own depth plane -->
+        <dl class="depth-layer mt-16 grid grid-cols-2 gap-6 border-t border-gray-200 pt-8 dark:border-dark-border sm:grid-cols-4" style="--depth:18px">
+          {
+            [
+              { count: 5, label: 'Major Systems' },
+              { count: 10, label: 'Projects' },
+              { count: 2, label: 'Years Experience' },
+              { count: 500, label: 'Users Supported' },
+            ].map((s) => (
+              <div class="text-center" data-tilt data-tilt-max="9">
+                <dd class="font-heading text-3xl font-bold text-primary-500 sm:text-4xl" data-count={s.count}>
+                  0
+                </dd>
+                <dt class="mt-1 text-sm text-gray-500 dark:text-gray-400">{s.label}</dt>
+              </div>
+            ))
+          }
+        </dl>
       </div>
     </div>
   </div>
 
-  <!-- Scroll indicator -->
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" aria-hidden="true">
-    <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+  <!-- Scroll indicator, furthest back -->
+  <div class="depth-layer absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" style="--depth:-30px" aria-hidden="true">
+    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
   </div>
 </section>
 
 <script>
-  // Typed text animation
   const typedText = document.getElementById('typed-text');
   const phrases = [
     'IT Technician',
     'Programmer',
     'Web Developer',
     'System Architect',
-    'Problem Solver'
+    'Problem Solver',
   ];
 
   let phraseIndex = 0;
@@ -111,7 +130,7 @@ import { withBase } from '@/utils/paths';
   let typingSpeed = 100;
 
   function type() {
-    const currentPhrase = phrases[phraseIndex];
+    const currentPhrase = phrases[phraseIndex]!;
 
     if (isDeleting) {
       typedText.textContent = currentPhrase.substring(0, charIndex - 1);
@@ -135,50 +154,90 @@ import { withBase } from '@/utils/paths';
     setTimeout(type, typingSpeed);
   }
 
-  // Counter animation
-  const counters = document.querySelectorAll('[data-count]');
-  const animateCounters = () => {
-    counters.forEach(counter => {
-      const target = parseInt(counter.dataset.count);
-      const duration = 2000;
-      const step = target / (duration / 16);
-      let current = 0;
+  // Counter animation, driven by rAF so it matches the frame budget.
+  function animateCounter(el: HTMLElement) {
+    const target = Number(el.dataset.count);
+    if (!Number.isFinite(target)) return;
 
-      const updateCounter = () => {
-        current += step;
-        if (current < target) {
-          counter.textContent = Math.floor(current);
-          requestAnimationFrame(updateCounter);
-        } else {
-          counter.textContent = target;
+    const duration = 1600;
+    const start = performance.now();
+
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      // easeOutCubic, so the number decelerates instead of stopping dead.
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = String(Math.round(target * eased));
+      if (t < 1) requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+  }
+
+  const hero = document.querySelector('[data-hero]');
+  if (hero) {
+    const counterObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.querySelectorAll('[data-count]').forEach((el) => animateCounter(el as HTMLElement));
+          counterObserver.unobserve(entry.target);
         }
-      };
+      },
+      { threshold: 0.4 }
+    );
+    counterObserver.observe(hero);
 
-      updateCounter();
-    });
-  };
+    // Pointer parallax across the depth layers. Small offsets only, and the
+    // layers are moved as a group so the text stays legible.
+    const fine = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Intersection observer for counter animation
-  const heroSection = document.getElementById('hero');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        animateCounters();
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.5 });
+    if (fine && !calm) {
+      let ticking = false;
+      hero.addEventListener('pointermove', (e) => {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          ticking = false;
+          const r = hero.getBoundingClientRect();
+          const px = (e.clientX - r.left) / r.width - 0.5;
+          const py = (e.clientY - r.top) / r.height - 0.5;
 
-  observer.observe(heroSection);
+          hero.querySelectorAll<HTMLElement>('.depth-layer').forEach((layer) => {
+            const depth = Number(
+              (layer.style.getPropertyValue('--depth') || '0').replace('px', '')
+            );
+            // Scale the shift by depth so further-back layers move less,
+            // which is what produces the parallax separation.
+            const k = depth / 120;
+            layer.style.setProperty(
+              'transform',
+              `translate3d(${(-px * 16 * k).toFixed(2)}px, ${(-py * 12 * k).toFixed(2)}px, 0px)`
+            );
+          });
+        });
+      });
 
-  // Start typing animation
+      hero.addEventListener('pointerleave', () => {
+        hero.querySelectorAll<HTMLElement>('.depth-layer').forEach((layer) => {
+          layer.style.removeProperty('transform');
+        });
+      });
+    }
+  }
+
   type();
 </script>
 
 <style>
   @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
   }
 
   .animate-blink {

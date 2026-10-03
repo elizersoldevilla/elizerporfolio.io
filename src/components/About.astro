@@ -3,12 +3,12 @@
 import { withBase } from '@/utils/paths';
 ---
 
-<section id="about" class="section bg-white dark:bg-dark-bg" aria-labelledby="about-heading">
+<section id="about" class="perspective-scene section bg-white dark:bg-dark-bg" aria-labelledby="about-heading">
   <div class="container-custom lg:pl-72">
     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <!-- Image -->
-      <div class="relative animate-fade-in animate-slide-up" style="animation-delay: 100ms;">
-        <div class="relative">
+      <div class="depth-layer relative animate-fade-in animate-slide-up" style="--depth: 40px; animation-delay: 100ms;">
+        <div class="relative depth-shadow rounded-2xl">
           <img
             src={withBase('/images/Soldevillabg.jpg')}
             width="560"
@@ -27,7 +27,7 @@ import { withBase } from '@/utils/paths';
       </div>
 
       <!-- Content -->
-      <div class="animate-fade-in animate-slide-up" style="animation-delay: 200ms;">
+      <div class="depth-layer animate-fade-in animate-slide-up" style="--depth: 10px; animation-delay: 200ms;">
         <div class="mb-8">
           <span class="inline-block px-3 py-1 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">About Me</span>
           <h2 id="about-heading" class="section-title">Computer Science Graduate & IT Professional</h2>
