@@ -37,9 +37,24 @@
    * `--depth` is the Z distance. Values are small on purpose: past roughly
    * -200px with this perspective the parallax offset becomes large enough to
    * make text hard to track.
+   *
+   * `--parallax-x` / `--parallax-y` are written by the hero pointer handler in
+   * Hero.astro. They are separate properties rather than an inline `transform`
+   * on purpose: an inline transform would replace this whole declaration and so
+   * silently drop the translateZ, flattening the depth on the first mouse move.
+   * Composing both here means script only ever touches custom properties.
+   *
+   * For the same reason, a `.depth-layer` must not also carry a Tailwind
+   * transform utility (e.g. `-translate-x-1/2`) or a transform `animate-*`
+   * class: utilities and animations outrank this rule and the layer loses its
+   * depth plane.
    */
   .depth-layer {
-    transform: translateZ(var(--depth, 0px));
+    transform: translate3d(
+      var(--parallax-x, 0px),
+      var(--parallax-y, 0px),
+      var(--depth, 0px)
+    );
     transform-style: preserve-3d;
     will-change: transform;
   }

@@ -11,6 +11,8 @@
  * the sole way to see something.
  */
 
+import { createFrameScheduler } from '@/utils/frame';
+
 const MAX_TILT = 7; // degrees; enough to read as 3D, not enough to distort text
 const LIFT = 14; // px of Z translation
 const SCALE = 1.012;
@@ -127,38 +129,47 @@ export function initTilt(root: ParentNode = document): void {
     }
 
     el.dataset.tiltReady = 'true';
-    let frame = 0;
 
-    const apply = (e: PointerEvent) => {
-      // Coalesce to one write per frame; pointermove fires far more often.
-      if (frame) return;
-      frame = requestAnimationFrame(() => {
-        frame = 0;
-        const r = el.getBoundingClientRect();
-        if (!r.width || !r.height) return;
+    /*
+     * Coalesce pointermove into one write per frame via the shared scheduler.
+     * The scheduler heals itself if a frame is dropped, which a plain
+     * `if (frame) return` latch cannot do: rAF is deferred while the tab is
+     * hidden, so hovering a card and then switching tabs left the latch stuck
+     * and tilt was dead for the rest of the session.
+     */
+    const schedule = createFrameScheduler<{ x: number; y: number }>(({ x, y }) => {
+      const r = el.getBoundingClientRect();
+      if (!r.width || !r.height) return;
 
-        // Normalised cursor position within the element, -0.5..0.5.
-        const px = (e.clientX - r.left) / r.width - 0.5;
-        const py = (e.clientY - r.top) / r.height - 0.5;
+      // Normalised cursor position within the element, -0.5..0.5.
+      // x/y are viewport coordinates, and the rect is viewport-relative.
+      const px = (x - r.left) / r.width - 0.5;
+      const py = (y - r.top) / r.height - 0.5;
 
-        // RotateY follows horizontal cursor, rotateX inverts vertical so the
-        // surface appears to tip away from the pointer.
-        const rotateY = px * opts.max! * 2;
-        const rotateX = -py * opts.max! * 2;
+      // RotateY follows horizontal cursor, rotateX inverts vertical so the
+      // surface appears to tip away from the pointer.
+      const rotateY = px * opts.max! * 2;
+      const rotateX = -py * opts.max! * 2;
 
-        el.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(
-          2
-        )}deg) translateZ(${LIFT}px) scale(${SCALE})`;
+      el.style.transform = `perspective(900px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(
+        2
+      )}deg) translateZ(${LIFT}px) scale(${SCALE})`;
 
-        // Shadow shifts opposite the tilt so the light source stays put.
-        el.style.setProperty('--tilt-shadow', `${(-rotateY / 2).toFixed(1)}px ${(
-          rotateX / 2 + 6
-        ).toFixed(1)}px 30px rgba(2, 8, 23, 0.16)`);
-      });
-    };
+      // Shadow shifts opposite the tilt so the light source stays put.
+      el.style.setProperty('--tilt-shadow', `${(-rotateY / 2).toFixed(1)}px ${(
+        rotateX / 2 + 6
+      ).toFixed(1)}px 30px rgba(2, 8, 23, 0.16)`);
+    });
 
-    el.addEventListener('pointermove', apply);
-    el.addEventListener('pointerleave', reset);
+    el.addEventListener('pointermove', (e) => {
+      // Page coordinates, converted to the viewport frame the handler reads.
+      schedule({ x: e.clientX, y: e.clientY });
+    });
+
+    el.addEventListener('pointerleave', () => {
+      schedule.flush();
+      reset();
+    });
     el.addEventListener('blur', reset);
 
     if (opts.enter === 'lift') {

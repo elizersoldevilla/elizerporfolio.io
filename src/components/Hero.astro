@@ -108,13 +108,25 @@ const cubes = [
     </div>
   </div>
 
-  <!-- Scroll indicator, furthest back -->
-  <div class="depth-layer absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce" style="--depth:-30px" aria-hidden="true">
-    <svg class="h-6 w-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+  <!--
+    Scroll indicator, furthest back.
+
+    Centred with inset-x-0 + mx-auto rather than `-translate-x-1/2`, and the
+    bounce moved to an inner element. Both are transform properties, and a
+    transform written here would override the `.depth-layer` transform that
+    places this element on its Z plane (and `animate-bounce` would win over it
+    regardless). See depth.css.
+  -->
+  <div class="depth-layer absolute inset-x-0 bottom-8 mx-auto w-fit" style="--depth:-30px" aria-hidden="true">
+    <svg class="h-6 w-6 animate-bounce text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
   </div>
 </section>
 
 <script>
+  // Static import inside the client script: a frontmatter import is stripped
+  // from the browser bundle.
+  import { createFrameScheduler } from '@/utils/frame';
+
   const typedText = document.getElementById('typed-text');
   const phrases = [
     'IT Technician',
@@ -193,35 +205,40 @@ const cubes = [
     const calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     if (fine && !calm) {
-      let ticking = false;
-      hero.addEventListener('pointermove', (e) => {
-        if (ticking) return;
-        ticking = true;
-        requestAnimationFrame(() => {
-          ticking = false;
-          const r = hero.getBoundingClientRect();
-          const px = (e.clientX - r.left) / r.width - 0.5;
-          const py = (e.clientY - r.top) / r.height - 0.5;
+      // Cached once: querySelectorAll in a pointermove handler is measurable.
+      const layers = Array.from(hero.querySelectorAll<HTMLElement>('.depth-layer')).map(
+        (el) => ({
+          el,
+          // Fall back to 0 so a missing --depth cannot produce NaN in the
+          // transform, which would invalidate the whole declaration.
+          depth: Number.parseFloat(el.style.getPropertyValue('--depth')) || 0,
+        })
+      );
 
-          hero.querySelectorAll<HTMLElement>('.depth-layer').forEach((layer) => {
-            const depth = Number(
-              (layer.style.getPropertyValue('--depth') || '0').replace('px', '')
-            );
-            // Scale the shift by depth so further-back layers move less,
-            // which is what produces the parallax separation.
-            const k = depth / 120;
-            layer.style.setProperty(
-              'transform',
-              `translate3d(${(-px * 16 * k).toFixed(2)}px, ${(-py * 12 * k).toFixed(2)}px, 0px)`
-            );
-          });
-        });
+      const schedule = createFrameScheduler<{ x: number; y: number }>(({ x, y }) => {
+        const r = hero.getBoundingClientRect();
+        const px = (x - r.left) / r.width - 0.5;
+        const py = (y - r.top) / r.height - 0.5;
+
+        for (const { el, depth } of layers) {
+          // Scale the shift by depth so further-back layers move less,
+          // which is what produces the parallax separation.
+          const k = depth / 120;
+          // Only the offset is written; depth.css composes it with the
+          // translateZ so the layer keeps its Z plane.
+          el.style.setProperty('--parallax-x', `${(-px * 16 * k).toFixed(2)}px`);
+          el.style.setProperty('--parallax-y', `${(-py * 12 * k).toFixed(2)}px`);
+        }
       });
 
+      hero.addEventListener('pointermove', (e) => schedule({ x: e.clientX, y: e.clientY }));
+
       hero.addEventListener('pointerleave', () => {
-        hero.querySelectorAll<HTMLElement>('.depth-layer').forEach((layer) => {
-          layer.style.removeProperty('transform');
-        });
+        schedule.flush();
+        for (const { el } of layers) {
+          el.style.removeProperty('--parallax-x');
+          el.style.removeProperty('--parallax-y');
+        }
       });
     }
   }

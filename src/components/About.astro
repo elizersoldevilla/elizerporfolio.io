@@ -6,9 +6,17 @@ import { withBase } from '@/utils/paths';
 <section id="about" class="perspective-scene section bg-white dark:bg-dark-bg" aria-labelledby="about-heading">
   <div class="container-custom lg:pl-72">
     <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-      <!-- Image -->
-      <div class="depth-layer relative animate-fade-in animate-slide-up" style="--depth: 40px; animation-delay: 100ms;">
-        <div class="relative depth-shadow rounded-2xl">
+      <!--
+  Image.
+
+  The entrance animation sits on the inner wrapper, not on the `.depth-layer`.
+  `animate-slide-up` keyframes animate `transform`, and a running animation
+  outranks the rule that places this element on its Z plane, so the depth would
+  pop in when the animation finished. On the wrapper it is just as effective and
+  the outer transform is left alone.
+-->
+      <div class="depth-layer relative" style="--depth: 40px;">
+        <div class="relative depth-shadow animate-fade-in animate-slide-up rounded-2xl" style="animation-delay: 100ms;">
           <img
             src={withBase('/images/Soldevillabg.jpg')}
             width="560"
@@ -26,8 +34,9 @@ import { withBase } from '@/utils/paths';
         </div>
       </div>
 
-      <!-- Content -->
-      <div class="depth-layer animate-fade-in animate-slide-up" style="--depth: 10px; animation-delay: 200ms;">
+      <!-- Content. Entrance on the wrapper, same reason as the image above. -->
+      <div class="depth-layer" style="--depth: 10px;">
+        <div class="animate-fade-in animate-slide-up" style="animation-delay: 200ms;">
         <div class="mb-8">
           <span class="inline-block px-3 py-1 rounded-full bg-primary-500/10 text-primary-600 dark:text-primary-400 text-sm font-medium mb-4">About Me</span>
           <h2 id="about-heading" class="section-title">Computer Science Graduate & IT Professional</h2>
@@ -95,6 +104,7 @@ import { withBase } from '@/utils/paths';
             <span class="badge-primary">System Design</span>
             <span class="badge-primary">Photography</span>
           </div>
+        </div>
         </div>
       </div>
     </div>
