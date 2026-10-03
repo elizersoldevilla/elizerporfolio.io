@@ -1,0 +1,429 @@
+---
+// Interactive 3D puzzle: a 2x2 "Pocket Cube" built entirely from CSS 3D
+// transforms. No WebGL or Three.js, so it costs a couple of KB instead of
+// hundreds, and it degrades to a readable colour grid without JS.
+import { FACE_NAMES, type FaceName } from '@/utils/cube';
+
+interface Props {
+  /** Which faces get an on-cube turn button. */
+  showControls?: boolean;
+}
+
+const { showControls = true } = Astro.props;
+
+const MOVE_HINTS: Record<FaceName, string> = {
+  U: 'Top',
+  D: 'Bottom',
+  F: 'Front',
+  B: 'Back',
+  R: 'Right',
+  L: 'Left',
+};
+---
+
+<section id="puzzle" class="section bg-white dark:bg-dark-bg" aria-labelledby="puzzle-heading">
+  <div class="container-custom lg:pl-72">
+    <div class="grid items-center gap-12 lg:grid-cols-2">
+      <!-- Copy -->
+      <div>
+        <span class="mb-4 inline-block rounded-full bg-primary-500/10 px-3 py-1 text-sm font-medium text-primary-600 dark:text-primary-400">
+          Break time
+        </span>
+        <h2 id="puzzle-heading" class="section-title">Try a 2×2 Cube</h2>
+        <p class="section-subtitle mt-4">
+          A small puzzle I built to decompress. Every sticker is a real DOM element
+          positioned with CSS 3D transforms, and the move logic is plain
+          TypeScript — no canvas, no WebGL, no library.
+        </p>
+
+        <dl class="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div class="card p-4">
+            <dt class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Moves</dt>
+            <dd class="mt-1 font-heading text-2xl font-bold text-primary-500" data-move-count>0</dd>
+          </div>
+          <div class="card p-4">
+            <dt class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Stickers home</dt>
+            <dd class="mt-1 font-heading text-2xl font-bold text-primary-500" data-home-count>24/24</dd>
+          </div>
+          <div class="card p-4">
+            <dt class="text-xs uppercase tracking-wide text-gray-500 dark:text-gray-400">Best</dt>
+            <dd class="mt-1 font-heading text-2xl font-bold text-primary-500" data-best-count>—</dd>
+          </div>
+        </dl>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button type="button" class="btn-primary" data-action="scramble">Scramble</button>
+          <button type="button" class="btn-secondary" data-action="reset">Reset</button>
+        </div>
+
+        <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+          Drag the cube to look around it. Click a face to turn it, or use the
+          buttons below. Get every side to one colour.
+        </p>
+
+        <p class="sr-only" aria-live="polite" data-announcer></p>
+      </div>
+
+      <!-- Cube -->
+      <div class="flex flex-col items-center gap-6">
+        <div class="cube-stage" data-stage>
+          <div class="cube" data-cube role="group" aria-label="2 by 2 puzzle cube" tabindex="0">
+            <div class="cube__face cube__face--u" data-face="U"></div>
+            <div class="cube__face cube__face--d" data-face="D"></div>
+            <div class="cube__face cube__face--f" data-face="F"></div>
+            <div class="cube__face cube__face--b" data-face="B"></div>
+            <div class="cube__face cube__face--r" data-face="R"></div>
+            <div class="cube__face cube__face--l" data-face="L"></div>
+          </div>
+        </div>
+
+        {
+          showControls && (
+            <div class="flex flex-wrap justify-center gap-2" role="group" aria-label="Turn a face">
+              {FACE_NAMES.map((face) => (
+                <div class="flex items-center gap-1 rounded-lg border border-gray-100 bg-white p-1 dark:border-dark-border dark:bg-dark-card">
+                  <button
+                    type="button"
+                    class="rounded-md px-2 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-gray-300 dark:hover:bg-primary-900/20"
+                    data-turn={face}
+                    data-dir="-1"
+                    aria-label={`Turn ${MOVE_HINTS[face]} face counter-clockwise`}
+                  >
+                    <span aria-hidden="true">↺</span> {MOVE_HINTS[face]}
+                  </button>
+                  <button
+                    type="button"
+                    class="rounded-md px-2 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:bg-primary-50 hover:text-primary-600 dark:text-gray-300 dark:hover:bg-primary-900/20"
+                    data-turn={face}
+                    data-dir="1"
+                    aria-label={`Turn ${MOVE_HINTS[face]} face clockwise`}
+                  >
+                    {MOVE_HINTS[face]} <span aria-hidden="true">↻</span>
+                  </button>
+                </div>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cube-stage {
+    /* Fixed square so the perspective origin stays put while dragging. */
+    width: 260px;
+    height: 260px;
+    perspective: 900px;
+    display: grid;
+    place-items: center;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .cube-stage:active {
+    cursor: grabbing;
+  }
+
+  .cube {
+    --size: 132px;
+    --half: calc(var(--size) / 2);
+    --gap: 3px;
+
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    transform-style: preserve-3d;
+    /* Initial three-quarter view. */
+    transform: rotateX(-24deg) rotateY(-38deg);
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* No transition while the user is actively dragging. */
+  .cube.is-dragging {
+    transition: none;
+  }
+
+  .cube__face {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: var(--gap);
+    padding: var(--gap);
+    background: #0b1220;
+    border-radius: 10px;
+    backface-visibility: hidden;
+  }
+
+  .cube__face--u {
+    transform: rotateX(90deg) translateZ(var(--half));
+  }
+  .cube__face--d {
+    transform: rotateX(-90deg) translateZ(var(--half));
+  }
+  .cube__face--f {
+    transform: translateZ(var(--half));
+  }
+  .cube__face--b {
+    transform: rotateY(180deg) translateZ(var(--half));
+  }
+  .cube__face--r {
+    transform: rotateY(90deg) translateZ(var(--half));
+  }
+  .cube__face--l {
+    transform: rotateY(-90deg) translateZ(var(--half));
+  }
+
+  .sticker {
+    border-radius: 6px;
+    box-shadow: inset 0 -2px 6px rgb(0 0 0 / 0.25), inset 0 2px 4px rgb(255 255 255 / 0.35);
+  }
+
+  /* The invisible hit area covering a whole face, used for click-to-turn. */
+  .face-hit {
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    padding: 0;
+  }
+
+  .face-hit:focus-visible {
+    outline: 2px solid #149ddd;
+    outline-offset: 2px;
+  }
+
+  .cube__face:hover .face-hit {
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cube {
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  import {
+    createCube,
+    turn,
+    isSolved,
+    solvedCount,
+    scramble,
+    applyMoves,
+    PALETTE,
+    type CubeState,
+    type FaceName,
+  } from '@/utils/cube';
+
+  const stage = document.querySelector<HTMLElement>('[data-stage]');
+  const cubeEl = document.querySelector<HTMLElement>('[data-cube]');
+
+  if (stage && cubeEl) {
+    const BEST_KEY = 'elizer-cube-best';
+    let state: CubeState = createCube();
+    /** Most recent first, so a move can be undone by replaying the inverse. */
+    let history: Array<[FaceName, 1 | -1]> = [];
+
+    // ---- Rendering -------------------------------------------------------
+    // Stickers are re-created only when the face layout changes, not on every
+    // turn; a turn just repaints colours, which keeps it cheap.
+    const faceEls = new Map<FaceName, HTMLElement>();
+    cubeEl.querySelectorAll<HTMLElement>('[data-face]').forEach((el) => {
+      faceEls.set(el.dataset.face as FaceName, el);
+
+      const hit = document.createElement('button');
+      hit.type = 'button';
+      hit.className = 'face-hit';
+      hit.dataset.turn = el.dataset.face!;
+      hit.setAttribute('aria-label', `Turn ${el.dataset.face} face clockwise`);
+      // Click turns clockwise, shift-click counter-clockwise.
+      hit.addEventListener('click', (e) => {
+        doTurn(el.dataset.face as FaceName, (e as MouseEvent).shiftKey ? -1 : 1);
+      });
+      el.append(hit);
+
+      for (let i = 0; i < 4; i++) {
+        const s = document.createElement('div');
+        s.className = 'sticker';
+        s.dataset.slot = String(i);
+        el.append(s);
+      }
+    });
+
+    /**
+     * Maps a sticker's (position, normal) onto a face + 2x2 slot index.
+     * Each face is viewed from outside, so the local axes depend on which
+     * face it is; this is what keeps stickers in the right cell after a turn.
+     */
+    function slotOf(pos: readonly number[], nrm: readonly number[]) {
+      const [x, y, z] = pos;
+      switch (nrm[1]) {
+        case 1:
+          return { face: 'U', slot: (x > 0 ? 1 : 0) + (z > 0 ? 2 : 0) };
+        case -1:
+          return { face: 'D', slot: (x > 0 ? 1 : 0) + (z < 0 ? 2 : 0) };
+      }
+      switch (nrm[2]) {
+        case 1:
+          return { face: 'F', slot: (x > 0 ? 1 : 0) + (y < 0 ? 2 : 0) };
+        case -1:
+          return { face: 'B', slot: (x < 0 ? 1 : 0) + (y < 0 ? 2 : 0) };
+      }
+      switch (nrm[0]) {
+        case 1:
+          return { face: 'R', slot: (z < 0 ? 1 : 0) + (y < 0 ? 2 : 0) };
+        default:
+          return { face: 'L', slot: (z > 0 ? 1 : 0) + (y < 0 ? 2 : 0) };
+      }
+    }
+
+    function render() {
+      for (const s of state.stickers) {
+        const { face, slot } = slotOf(s.pos, s.nrm);
+        const el = faceEls.get(face)?.querySelector<HTMLElement>(`[data-slot="${slot}"]`);
+        if (el) el.style.background = PALETTE[s.color];
+      }
+
+      const home = solvedCount(state);
+      const moves = document.querySelector('[data-move-count]');
+      const homeEl = document.querySelector('[data-home-count]');
+      if (moves) moves.textContent = String(history.length);
+      if (homeEl) homeEl.textContent = `${home}/24`;
+
+      if (isSolved(state) && history.length > 0) onSolved();
+    }
+
+    function onSolved() {
+      const announcer = document.querySelector('[data-announcer]');
+      const n = history.length;
+      announcer?.replaceChildren(
+        document.createTextNode(`Solved in ${n} moves. Congrats!`)
+      );
+
+      const prev = Number(localStorage.getItem(BEST_KEY) ?? NaN);
+      const bestEl = document.querySelector('[data-best-count]');
+      if (!Number.isFinite(prev) || n < prev) {
+        localStorage.setItem(BEST_KEY, String(n));
+        if (bestEl) bestEl.textContent = String(n);
+      }
+
+      // Brief celebratory spin; skipped when the user asked for less motion.
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        cubeEl.style.transform = 'rotateX(-24deg) rotateY(-38deg) scale(1.08)';
+        setTimeout(() => {
+          cubeEl.style.transform = 'rotateX(-24deg) rotateY(-38deg)';
+        }, 420);
+      }
+    }
+
+    function doTurn(face: FaceName, dir: 1 | -1) {
+      state = turn(state, face, dir);
+      history.push([face, dir]);
+      render();
+    }
+
+    // ---- Buttons ---------------------------------------------------------
+    function doScramble() {
+      const moves = scramble(14);
+      state = applyMoves(moves);
+      history = moves.slice();
+      render();
+    }
+
+    function doReset() {
+      state = createCube();
+      history = [];
+      render();
+    }
+
+    document.querySelectorAll<HTMLButtonElement>('[data-turn]').forEach((btn) => {
+      if (btn.classList.contains('face-hit')) return; // handled per-face above
+      btn.addEventListener('click', () => {
+        doTurn(btn.dataset.turn as FaceName, Number(btn.dataset.dir) === -1 ? -1 : 1);
+      });
+    });
+
+    document.querySelector('[data-action="scramble"]')?.addEventListener('click', doScramble);
+    document.querySelector('[data-action="reset"]')?.addEventListener('click', doReset);
+
+    const bestEl = document.querySelector('[data-best-count]');
+    const stored = localStorage.getItem(BEST_KEY);
+    if (bestEl && stored) bestEl.textContent = stored;
+
+    // ---- Drag to orbit ---------------------------------------------------
+    let dragging = false;
+    let lastX = 0;
+    let lastY = 0;
+    let rx = -24;
+    let ry = -38;
+
+    stage.addEventListener('pointerdown', (e) => {
+      // Ignore drags that begin on a face's turn button.
+      if ((e.target as HTMLElement).closest('.face-hit')) return;
+      dragging = true;
+      lastX = e.clientX;
+      lastY = e.clientY;
+      cubeEl.classList.add('is-dragging');
+      stage.setPointerCapture(e.pointerId);
+    });
+
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      ry += (e.clientX - lastX) * 0.45;
+      rx = Math.max(-90, Math.min(90, rx - (e.clientY - lastY) * 0.45));
+      lastX = e.clientX;
+      lastY = e.clientY;
+      cubeEl.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+
+    const endDrag = () => {
+      if (!dragging) return;
+      dragging = false;
+      cubeEl.classList.remove('is-dragging');
+    };
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+
+    // ---- Keyboard --------------------------------------------------------
+    const KEY_FACES: Record<string, FaceName> = {
+      u: 'U',
+      d: 'D',
+      f: 'F',
+      b: 'B',
+      r: 'R',
+      l: 'L',
+    };
+
+    cubeEl.addEventListener('keydown', (e) => {
+      const k = e.key.toLowerCase();
+      if (k === 'arrowleft') {
+        ry -= 15;
+      } else if (k === 'arrowright') {
+        ry += 15;
+      } else if (k === 'arrowup') {
+        rx = Math.max(-90, rx - 15);
+      } else if (k === 'arrowdown') {
+        rx = Math.min(90, rx + 15);
+      } else if (KEY_FACES[k]) {
+        doTurn(KEY_FACES[k]!, e.shiftKey ? -1 : 1);
+      } else if (k === 'z' && (e.ctrlKey || e.metaKey) && history.length) {
+        const [face, dir] = history.pop()!;
+        state = turn(state, face, dir === 1 ? -1 : 1);
+        render();
+      } else {
+        return;
+      }
+      e.preventDefault();
+      cubeEl.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+    });
+
+    render();
+  }
+</script>
