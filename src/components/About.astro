@@ -1,5 +1,6 @@
 ---
 // About Section Component
+import { withBase } from '@/utils/paths';
 ---
 
 <section id="about" class="section bg-white dark:bg-dark-bg" aria-labelledby="about-heading">
@@ -9,7 +10,9 @@
       <div class="relative animate-fade-in animate-slide-up" style="animation-delay: 100ms;">
         <div class="relative">
           <img
-            src="/images/Soldevillabg.jpg"
+            src={withBase('/images/Soldevillabg.jpg')}
+            width="560"
+            height="420"
             alt="Elizer Soldevilla working"
             class="w-full rounded-2xl shadow-2xl border border-gray-100 dark:border-dark-border"
           />

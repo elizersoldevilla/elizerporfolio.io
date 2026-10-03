@@ -2,9 +2,9 @@
 title: "File Management System v2"
 description: "Secure file sharing and collaboration platform with end-to-end encryption"
 longDescription: "Modern file management system with end-to-end encryption, secure sharing links, version history, and collaborative editing. Built with zero-knowledge architecture ensuring server cannot access file contents."
-image: "/images/portfolio/Filemanagement2.PNG"
+image: "/images/portfolio/Filemanagement2.png"
 images:
-  - "/images/portfolio/Filemanagement2.PNG"
+  - "/images/portfolio/Filemanagement2.png"
 category: "web"
 technologies:
   - "Node.js"

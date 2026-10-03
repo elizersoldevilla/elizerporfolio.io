@@ -2,9 +2,9 @@
 title: "Archiving System"
 description: "Document archiving and retrieval system with OCR and full-text search"
 longDescription: "Digital archiving system for document management with Optical Character Recognition (OCR), full-text search, version control, and retention policy enforcement. Designed for compliance with Philippine National Archives guidelines."
-image: "/images/portfolio/portfolio-9.PNG"
+image: "/images/portfolio/portfolio-9.png"
 images:
-  - "/images/portfolio/portfolio-9.PNG"
+  - "/images/portfolio/portfolio-9.png"
 category: "system"
 technologies:
   - "Python"

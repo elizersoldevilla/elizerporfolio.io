@@ -1,6 +1,7 @@
 ---
 // Portfolio Section Component
 import { getCollection } from 'astro:content';
+import { withBase, imageSrc } from '@/utils/paths';
 
 const projects = await getCollection('projects');
 const featuredProjects = projects.filter(p => p.data.featured).sort((a, b) => new Date(b.data.startDate).getTime() - new Date(a.data.startDate).getTime());
@@ -42,7 +43,7 @@ const categories = ['All', 'Featured', 'Web', 'System', 'Mobile', 'Other'];
           <div class="lg:grid lg:grid-cols-2 gap-0">
             <div class="relative aspect-video lg:aspect-auto min-h-[300px] overflow-hidden">
               <img
-                src={project.data.image}
+                src={imageSrc(project.data.image)}
                 alt=""
                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 loading={index < 3 ? 'eager' : 'lazy'}
@@ -82,7 +83,7 @@ const categories = ['All', 'Featured', 'Web', 'System', 'Mobile', 'Other'];
               )}
 
               <div class="flex flex-wrap gap-3 pt-4 border-t border-gray-100 dark:border-dark-border">
-                <a href={`#project-${project.slug}`} class="btn-primary">View Details</a>
+                <a href={withBase(`/project/${project.slug}/`)} class="btn-primary">View Details</a>
                 {project.data.projectUrl && (
                   <a href={project.data.projectUrl} target="_blank" rel="noopener noreferrer" class="btn-outline flex items-center gap-2">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -109,7 +110,7 @@ const categories = ['All', 'Featured', 'Web', 'System', 'Mobile', 'Other'];
           <article class="card overflow-hidden animate-fade-in animate-slide-up" style={`animation-delay: ${index * 100}ms`}>
             <div class="relative aspect-video overflow-hidden">
               <img
-                src={project.data.image}
+                src={imageSrc(project.data.image)}
                 alt=""
                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                 loading="lazy"
@@ -117,7 +118,7 @@ const categories = ['All', 'Featured', 'Web', 'System', 'Mobile', 'Other'];
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
               <div class="absolute bottom-4 left-4 right-4 text-white transform translate-y-4 opacity-0 hover:translate-y-0 hover:opacity-100 transition-all duration-300">
                 <div class="flex gap-2">
-                  <a href={`#project-${project.slug}`} class="btn-primary text-sm px-4 py-2">Details</a>
+                  <a href={withBase(`/project/${project.slug}/`)} class="btn-primary text-sm px-4 py-2">Details</a>
                   {project.data.projectUrl && (
                     <a href={project.data.projectUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary text-sm px-4 py-2" aria-label="View live demo">
                       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
@@ -156,14 +157,14 @@ const categories = ['All', 'Featured', 'Web', 'System', 'Mobile', 'Other'];
             <article class="card overflow-hidden animate-fade-in animate-slide-up" style={`animation-delay: ${index * 100}ms`}>
               <div class="relative aspect-video overflow-hidden">
                 <img
-                  src={project.data.image}
+                  src={imageSrc(project.data.image)}
                   alt=""
                   class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   loading="lazy"
                 />
                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300"></div>
                 <div class="absolute bottom-4 left-4 right-4 text-white transform translate-y-4 opacity-0 hover:translate-y-0 hover:opacity-100 transition-all duration-300">
-                  <a href={`#project-${project.slug}`} class="btn-primary text-sm px-4 py-2">View Details</a>
+                  <a href={withBase(`/project/${project.slug}/`)} class="btn-primary text-sm px-4 py-2">View Details</a>
                 </div>
               </div>
               <div class="p-5">

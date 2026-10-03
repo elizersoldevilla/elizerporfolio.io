@@ -2,9 +2,9 @@
 title: "iLab Equipment Monitoring System"
 description: "Laboratory equipment monitoring and reservation system with usage analytics"
 longDescription: "Equipment monitoring system for university computer laboratories. Tracks hardware inventory, software licenses, equipment reservations, usage analytics, and maintenance scheduling across multiple lab rooms."
-image: "/images/portfolio/portfolio-5.PNG"
+image: "/images/portfolio/portfolio-5.png"
 images:
-  - "/images/portfolio/portfolio-5.PNG"
+  - "/images/portfolio/portfolio-5.png"
 category: "system"
 technologies:
   - "C#"

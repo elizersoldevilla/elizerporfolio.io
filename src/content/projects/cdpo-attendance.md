@@ -5,7 +5,7 @@ longDescription: "Attendance management system for the Career Development and Pl
 image: "/images/portfolio/Attendance.png"
 images:
   - "/images/portfolio/Attendance.png"
-  - "/images/portfolio/Attendance2.PNG"
+  - "/images/portfolio/Attendance2.png"
 category: "web"
 technologies:
   - "PHP"

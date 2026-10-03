@@ -1,5 +1,6 @@
 ---
 // Hero Section Component
+import { withBase } from '@/utils/paths';
 ---
 
 <section id="hero" class="min-h-screen flex items-center justify-center relative overflow-hidden bg-gradient-to-br from-gray-50 via-white to-primary-50 dark:from-dark-bg dark:via-dark-bg dark:to-dark-card">
@@ -58,7 +59,7 @@
           <a href="#contact" class="btn-outline">
             Get In Touch
           </a>
-          <a href="/assets/cv-elizer-soldevilla.pdf" download class="btn-secondary">
+          <a href={withBase('/assets/cv-elizer-soldevilla.pdf')} download class="btn-secondary">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
             Download CV
           </a>
