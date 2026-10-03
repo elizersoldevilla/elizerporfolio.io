@@ -4,10 +4,3 @@ Allow: /
 
 # Sitemap
 Sitemap: https://elizersoldevilla.github.io/elizerporfolio.io/sitemap-index.xml
-
-# Disallow admin/private areas
-Disallow: /_astro/
-Disallow: /node_modules/
-Disallow: /src/
-Disallow: /*.json$
-Disallow: /*.map$
