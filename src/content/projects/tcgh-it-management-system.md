@@ -2,9 +2,9 @@
 title: "TCGH IT Management System"
 description: "A comprehensive IT asset and ticket management system for Taguig City General Hospital"
 longDescription: "Developed a full-featured IT Management System for Taguig City General Hospital to streamline IT asset tracking, helpdesk ticketing, and inventory management. The system replaces manual processes with automated workflows, reducing response times and improving accountability."
-image: "/images/portfolio/itmanagementsystem.png"
+image: "/images/portfolio/itmanagementsystem.jpg"
 images:
-  - "/images/portfolio/itmanagementsystem.png"
+  - "/images/portfolio/itmanagementsystem.jpg"
 category: "system"
 technologies:
   - "PHP"

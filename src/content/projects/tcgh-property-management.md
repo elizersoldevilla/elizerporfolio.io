@@ -2,9 +2,9 @@
 title: "TCGH Property Management System"
 description: "Hospital property and equipment tracking system with maintenance scheduling and depreciation tracking"
 longDescription: "Developed a Property Management System for Taguig City General Hospital to track medical equipment, furniture, and infrastructure assets. Includes maintenance scheduling, depreciation calculations, disposal workflows, and compliance reporting."
-image: "/images/portfolio/TCGH Property Management System.png"
+image: "/images/portfolio/TCGH Property Management System.jpg"
 images:
-  - "/images/portfolio/TCGH Property Management System.png"
+  - "/images/portfolio/TCGH Property Management System.jpg"
 category: "system"
 technologies:
   - "PHP"

@@ -2,9 +2,9 @@
 title: "TCGH Signage System"
 description: "Digital wayfinding and announcement system for hospital campus navigation"
 longDescription: "Digital Signage System deployed across Taguig City General Hospital campus for wayfinding, announcements, queue management, and emergency messaging. Centralized content management with role-based scheduling and multi-display support."
-image: "/images/portfolio/TCGH Signage System.png"
+image: "/images/portfolio/TCGH Signage System.jpg"
 images:
-  - "/images/portfolio/TCGH Signage System.png"
+  - "/images/portfolio/TCGH Signage System.jpg"
 category: "system"
 technologies:
   - "PHP"

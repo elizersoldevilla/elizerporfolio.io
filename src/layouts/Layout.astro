@@ -23,8 +23,21 @@ const {
 } = Astro.props;
 
 const siteURL = 'https://elizersoldevilla.github.io';
-const pageURL = canonicalURL || `${siteURL}${Astro.url.pathname}`;
+const basePath = import.meta.env.BASE_URL.replace(/\/+$/, '');
+
+// Astro.url.pathname already includes `base`, but it can lack a trailing
+// slash (e.g. "/elizerporfolio.io" for the index). Normalise so the canonical
+// matches the URL the browser actually requests.
+// Only treat known asset extensions as files: a bare `\.\w+$` test would match
+// the ".io" in this project's base path and wrongly skip the trailing slash.
+const ASSET_EXT = /\.(?:html?|xml|txt|json|webmanifest|css|js|mjs|png|jpe?g|gif|webp|avif|svg|ico|pdf|zip)$/i;
+const rawPath = Astro.url.pathname;
+const normPath =
+  rawPath.endsWith('/') || ASSET_EXT.test(rawPath) ? rawPath : `${rawPath}/`;
+
+const pageURL = canonicalURL || `${siteURL}${normPath}`;
 const pageTitle = title ? `${title} | Elizer Soldevilla` : 'Elizer Soldevilla | IT Technician & Programmer';
+const ogImageURL = `${siteURL}${withBase(ogImage)}`;
 ---
 
 <!DOCTYPE html>
@@ -50,14 +63,14 @@ const pageTitle = title ? `${title} | Elizer Soldevilla` : 'Elizer Soldevilla | 
   <meta property="og:url" content={pageURL}>
   <meta property="og:title" content={pageTitle}>
   <meta property="og:description" content={description}>
-  <meta property="og:image" content={`${siteURL}${ogImage}`}>
+  <meta property="og:image" content={ogImageURL}>
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content={pageURL}>
   <meta property="twitter:title" content={pageTitle}>
   <meta property="twitter:description" content={description}>
-  <meta property="twitter:image" content={`${siteURL}${ogImage}`}>
+  <meta property="twitter:image" content={ogImageURL}>
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href={withBase('/images/favicon.png')}>
@@ -77,8 +90,8 @@ const pageTitle = title ? `${title} | Elizer Soldevilla` : 'Elizer Soldevilla | 
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Elizer Soldevilla',
-    url: siteURL,
-    image: `${siteURL}/images/Soldevilla.jpg`,
+    url: pageURL,
+    image: `${siteURL}${withBase('/images/Soldevilla.jpg')}`,
     sameAs: [
       'https://github.com/elizersoldevilla',
       'https://linkedin.com/in/elizersoldevilla',
@@ -98,6 +111,13 @@ const pageTitle = title ? `${title} | Elizer Soldevilla` : 'Elizer Soldevilla | 
   }, null, 2)}></script>
 </head>
 <body class="font-sans antialiased">
+  <a
+    href="#main"
+    class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary-500 focus:px-4 focus:py-2 focus:text-white"
+  >
+    Skip to main content
+  </a>
+
   <!-- Header -->
   <Header />
 

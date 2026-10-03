@@ -14,14 +14,13 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const siteURL = 'https://elizersoldevilla.github.io';
-const pageURL = `${siteURL}/project/${project.slug}`;
 ---
 
+<!-- No canonicalURL override: Layout derives the canonical from
+     Astro.url.pathname, which already includes the deployment base. -->
 <Layout
   title={project.data.title}
   description={project.data.description}
-  canonicalURL={pageURL}
 >
   <article class="lg:pl-72">
     <!-- Hero Section -->

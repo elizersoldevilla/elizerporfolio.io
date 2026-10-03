@@ -48,7 +48,7 @@ export const skillCategories = [
     ]
   },
   {
-    name: 'Core Competencies',
+    name: 'Architecture & Practices',
     icon: 'cpu',
     skills: [
       { name: 'System Architecture', level: 80, color: 'bg-indigo-500' },

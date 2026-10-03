@@ -5,13 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Allow the workflow to publish to GitHub Pages.
 permissions:
   contents: read
   pages: write
   id-token: write
 
-# Never let two deploys race; queue instead of cancelling.
 concurrency:
   group: pages
   cancel-in-progress: false
@@ -24,6 +22,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # The build needs a pinned PostCSS/Tailwind resolution; without this the
+      # runner can pick up a different Tailwind major and fail on @apply.
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

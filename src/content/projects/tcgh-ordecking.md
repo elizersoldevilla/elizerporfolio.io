@@ -2,9 +2,9 @@
 title: "TCGH Ordecking System"
 description: "Operating Room scheduling and resource management system for surgical suite optimization"
 longDescription: "Specialized Operating Room Decking (Ordecking) System for managing surgical schedules, resource allocation, and team coordination at TCGH. Handles complex scheduling constraints including surgeon availability, equipment needs, anesthesia requirements, and emergency case prioritization."
-image: "/images/portfolio/TCGH Ordecking System.png"
+image: "/images/portfolio/TCGH Ordecking System.jpg"
 images:
-  - "/images/portfolio/TCGH Ordecking System.png"
+  - "/images/portfolio/TCGH Ordecking System.jpg"
 category: "system"
 technologies:
   - "PHP"

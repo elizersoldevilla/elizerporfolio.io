@@ -2,10 +2,10 @@
 title: "CDPO Attendance System"
 description: "Automated attendance tracking system for Career Development and Placement Office events and seminars"
 longDescription: "Attendance management system for the Career Development and Placement Office (CDPO) at Taguig City University. Handles event registration, QR code check-in, real-time attendance monitoring, and automated certificate generation for participants."
-image: "/images/portfolio/Attendance.png"
+image: "/images/portfolio/Attendance.jpg"
 images:
-  - "/images/portfolio/Attendance.png"
-  - "/images/portfolio/Attendance2.png"
+  - "/images/portfolio/Attendance.jpg"
+  - "/images/portfolio/Attendance2.jpg"
 category: "web"
 technologies:
   - "PHP"

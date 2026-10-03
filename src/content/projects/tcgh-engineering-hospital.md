@@ -2,9 +2,9 @@
 title: "TCGH Engineering Hospital System"
 description: "Facility management system for hospital engineering department covering work orders, preventive maintenance, and vendor management"
 longDescription: "Engineering Hospital System for managing facility maintenance operations at Taguig City General Hospital. Handles work order management, preventive maintenance scheduling, vendor/contractor management, and compliance tracking for healthcare facility standards."
-image: "/images/portfolio/TCGH Engineering Hospital System.png"
+image: "/images/portfolio/TCGH Engineering Hospital System.jpg"
 images:
-  - "/images/portfolio/TCGH Engineering Hospital System.png"
+  - "/images/portfolio/TCGH Engineering Hospital System.jpg"
 category: "system"
 technologies:
   - "PHP"

@@ -1,6 +1,5 @@
-# Robots.txt for Elizer Soldevilla Portfolio
 User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://elizersoldevilla.github.io/elizerporfolio.io/sitemap-index.xml
+Sitemap: https://elizersoldevilla.github.io/elizerporfolio.io/sitemap.xml

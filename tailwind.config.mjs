@@ -2,6 +2,10 @@
 export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   darkMode: 'class',
+  // `.hidden` is toggled from JS via classList.toggle('hidden', bool), which the
+  // content scanner cannot see. Without this the portfolio filter silently does
+  // nothing because the utility is absent from the built stylesheet.
+  safelist: ['hidden'],
   theme: {
     extend: {
       colors: {

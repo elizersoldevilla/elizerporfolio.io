@@ -2,10 +2,10 @@
 title: "Learning Management System (LMS)"
 description: "A modern Learning Management System for educational institutions with course management, assessments, and analytics"
 longDescription: "Built a comprehensive Learning Management System designed for educational institutions. Features include course creation, student enrollment, quiz/assessment engine, progress tracking, discussion forums, and detailed analytics for instructors and administrators."
-image: "/images/portfolio/LMS.png"
+image: "/images/portfolio/LMS.jpg"
 images:
-  - "/images/portfolio/LMS.png"
-  - "/images/portfolio/lms2.png"
+  - "/images/portfolio/LMS.jpg"
+  - "/images/portfolio/lms2.jpg"
 category: "web"
 technologies:
   - "PHP"
